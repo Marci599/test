@@ -36,10 +36,45 @@ fi
 if [ ! -d "$EXTERN/ttyd-tools/.git" ]; then
   git clone --depth 1 https://github.com/PistonMiner/ttyd-tools "$EXTERN/ttyd-tools"
 fi
-export TTYDTOOLS="${TTYDTOOLS:-$EXTERN/ttyd-tools}"
 
 LOADER_ROOT="$EXTERN/spm-rel-loader/spm-rel-loader"
 REL_DIR="$LOADER_ROOT/rel"
+export TTYDTOOLS="${TTYDTOOLS:-$EXTERN/ttyd-tools}"
+
+ensure_elf2rel() {
+  local expected="$TTYDTOOLS/bin/elf2rel"
+  if [ -x "$expected" ]; then
+    return 0
+  fi
+
+  mkdir -p "$TTYDTOOLS/bin"
+
+  local candidates=(
+    "$LOADER_ROOT/elf2rel"
+    "$EXTERN/ttyd-tools/ttyd-tools/elf2rel"
+    "$EXTERN/ttyd-tools/elf2rel"
+  )
+
+  local candidate
+  for candidate in "${candidates[@]}"; do
+    if [ -d "$candidate" ] && [ -f "$candidate/Makefile" ]; then
+      make -C "$candidate"
+      local built
+      built="$(find "$candidate" -type f -name elf2rel -perm -111 | head -n 1 || true)"
+      if [ -n "$built" ]; then
+        cp "$built" "$expected"
+        chmod +x "$expected"
+        return 0
+      fi
+    fi
+  done
+
+  echo "Could not build or find elf2rel at $expected" >&2
+  echo "SPM rel-loader expects the converter at \$(TTYDTOOLS)/bin/elf2rel." >&2
+  echo "TTYDTOOLS currently points to: $TTYDTOOLS" >&2
+  exit 1
+}
+ensure_elf2rel
 if [ ! -d "$REL_DIR" ]; then
   echo "Could not find SPM REL Loader framework at: $REL_DIR" >&2
   echo "The upstream repository layout may have changed. Expected the cloned repo to contain spm-rel-loader/rel." >&2
