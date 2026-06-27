@@ -64,9 +64,12 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
 
+
+If you see `Please set TTYDTOOLS in your environment`, update to the latest script. The build now vendors `PistonMiner/ttyd-tools` into `extern/ttyd-tools` and exports `TTYDTOOLS` automatically before invoking the upstream Makefile.
+
 If you see `make: *** No rule to make target 'us2'. Stop.`, update to the latest script. That error means `make` was being run from the cloned repository root instead of the upstream REL framework directory `extern/spm-rel-loader/spm-rel-loader/rel`.
 
-The script vendors the upstream loader/header projects into `extern/`, enters the upstream REL framework at `extern/spm-rel-loader/spm-rel-loader/rel`, builds the `us2` target, and copies the finished REL to:
+The script vendors the upstream loader/header/tool projects into `extern/`, including `spm-rel-loader`, `spm-headers`, and `ttyd-tools`. It exports `TTYDTOOLS` automatically, enters the upstream REL framework at `extern/spm-rel-loader/spm-rel-loader/rel`, builds the `us2` target, and copies the finished REL to:
 
 ```text
 dist/riivolution/spm-quick-map-menu/files/mod/mod.rel

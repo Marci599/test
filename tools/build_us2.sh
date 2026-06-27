@@ -33,6 +33,10 @@ fi
 if [ ! -d "$EXTERN/spm-headers/.git" ]; then
   git clone --depth 1 https://github.com/SeekyCt/spm-headers "$EXTERN/spm-headers"
 fi
+if [ ! -d "$EXTERN/ttyd-tools/.git" ]; then
+  git clone --depth 1 https://github.com/PistonMiner/ttyd-tools "$EXTERN/ttyd-tools"
+fi
+export TTYDTOOLS="${TTYDTOOLS:-$EXTERN/ttyd-tools}"
 
 LOADER_ROOT="$EXTERN/spm-rel-loader/spm-rel-loader"
 REL_DIR="$LOADER_ROOT/rel"
