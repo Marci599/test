@@ -63,7 +63,10 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\tools\build_us2.ps1
 ```
 
-The script vendors the upstream loader/header projects into `extern/`, configures the target as `us2`, and copies the finished REL to:
+
+If you see `make: *** No rule to make target 'us2'. Stop.`, update to the latest script. That error means `make` was being run from the cloned repository root instead of the upstream REL framework directory `extern/spm-rel-loader/spm-rel-loader/rel`.
+
+The script vendors the upstream loader/header projects into `extern/`, enters the upstream REL framework at `extern/spm-rel-loader/spm-rel-loader/rel`, builds the `us2` target, and copies the finished REL to:
 
 ```text
 dist/riivolution/spm-quick-map-menu/files/mod/mod.rel

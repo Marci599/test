@@ -34,7 +34,13 @@ if [ ! -d "$EXTERN/spm-headers/.git" ]; then
   git clone --depth 1 https://github.com/SeekyCt/spm-headers "$EXTERN/spm-headers"
 fi
 
-REL_DIR="$EXTERN/spm-rel-loader/rel"
+LOADER_ROOT="$EXTERN/spm-rel-loader/spm-rel-loader"
+REL_DIR="$LOADER_ROOT/rel"
+if [ ! -d "$REL_DIR" ]; then
+  echo "Could not find SPM REL Loader framework at: $REL_DIR" >&2
+  echo "The upstream repository layout may have changed. Expected the cloned repo to contain spm-rel-loader/rel." >&2
+  exit 1
+fi
 MOD_DIR="$REL_DIR/quick-map-menu"
 rm -rf "$MOD_DIR"
 mkdir -p "$MOD_DIR/src"
@@ -47,17 +53,17 @@ CPPFLAGS += -DSPM_US2 -DRELAX_NAMESPACING -I$(CURDIR)/src -I$(CURDIR)/../../../s
 LDFLAGS += -T$(CURDIR)/../../../spm-headers/linker/us2.ld
 MAKE
 
-cd "$EXTERN/spm-rel-loader"
+cd "$REL_DIR"
 if [ -f configure.py ]; then
   "${PYTHON_CMD[@]}" configure.py us2
 fi
-if command -v ninja >/dev/null 2>&1; then
+if command -v ninja >/dev/null 2>&1 && [ -f build.ninja ]; then
   ninja us2 || ninja
 else
   make us2
 fi
 
-FOUND="$(find "$EXTERN/spm-rel-loader" -name '*.us2.rel' -o -name 'mod.rel' | head -n 1 || true)"
+FOUND="$(find "$REL_DIR" -name '*.us2.rel' -o -name 'mod.rel' | head -n 1 || true)"
 if [ -z "$FOUND" ]; then
   echo "Build completed but no REL was found. Check upstream loader build layout." >&2
   exit 1
