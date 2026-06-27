@@ -32,6 +32,20 @@ function Quote-BashSingleQuoted {
     return "'" + ($Value -replace "'", "'\\''") + "'"
 }
 
+function Get-WindowsPythonForBash {
+    $python = Get-Command python.exe -ErrorAction SilentlyContinue
+    if ($python -and $python.Source) {
+        return @{ Exe = (Convert-ToMsysPath -WindowsPath $python.Source); Arg = $null; Label = $python.Source }
+    }
+
+    $py = Get-Command py.exe -ErrorAction SilentlyContinue
+    if ($py -and $py.Source) {
+        return @{ Exe = (Convert-ToMsysPath -WindowsPath $py.Source); Arg = '-3'; Label = "$($py.Source) -3" }
+    }
+
+    return $null
+}
+
 function Invoke-BashScript {
     param(
         [Parameter(Mandatory = $true)][string]$BashExe,
@@ -40,8 +54,28 @@ function Invoke-BashScript {
 
     $repoForBash = Convert-ToMsysPath -WindowsPath $RepoRoot
     $quotedRepo = Quote-BashSingleQuoted -Value $repoForBash
-    & $BashExe -lc "cd $quotedRepo && ./tools/build_us2.sh"
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    $pythonForBash = Get-WindowsPythonForBash
+
+    $oldPythonExe = $env:SPM_PYTHON_EXE
+    $oldPythonArg = $env:SPM_PYTHON_ARG
+    try {
+        if ($pythonForBash) {
+            Write-Host "Passing Windows Python to bash: $($pythonForBash.Label)"
+            $env:SPM_PYTHON_EXE = $pythonForBash.Exe
+            if ($pythonForBash.Arg) {
+                $env:SPM_PYTHON_ARG = $pythonForBash.Arg
+            } else {
+                Remove-Item Env:SPM_PYTHON_ARG -ErrorAction SilentlyContinue
+            }
+        }
+
+        & $BashExe -lc "cd $quotedRepo && ./tools/build_us2.sh"
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    }
+    finally {
+        if ($null -ne $oldPythonExe) { $env:SPM_PYTHON_EXE = $oldPythonExe } else { Remove-Item Env:SPM_PYTHON_EXE -ErrorAction SilentlyContinue }
+        if ($null -ne $oldPythonArg) { $env:SPM_PYTHON_ARG = $oldPythonArg } else { Remove-Item Env:SPM_PYTHON_ARG -ErrorAction SilentlyContinue }
+    }
 }
 
 $bash = Get-Command bash.exe -ErrorAction SilentlyContinue

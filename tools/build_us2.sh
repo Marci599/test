@@ -8,7 +8,12 @@ need() { command -v "$1" >/dev/null 2>&1 || { echo "Missing required command: $1
 need git
 
 find_python() {
-  if command -v python3 >/dev/null 2>&1; then
+  if [ -n "${SPM_PYTHON_EXE:-}" ]; then
+    PYTHON_CMD=("$SPM_PYTHON_EXE")
+    if [ -n "${SPM_PYTHON_ARG:-}" ]; then
+      PYTHON_CMD+=("$SPM_PYTHON_ARG")
+    fi
+  elif command -v python3 >/dev/null 2>&1; then
     PYTHON_CMD=(python3)
   elif command -v python >/dev/null 2>&1; then
     PYTHON_CMD=(python)

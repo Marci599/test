@@ -34,7 +34,7 @@ On Windows PowerShell, run the wrapper instead:
 .\tools\build_us2.ps1
 ```
 
-The PowerShell wrapper looks for Git Bash first and then WSL. WSL 2 with Ubuntu is recommended because the devkitPPC toolchain and upstream REL loader dependencies are easiest to install there. It also converts Windows paths such as `C:\Users\...` to Git-Bash paths such as `/c/Users/...`, so run it from PowerShell rather than editing the `.sh` path manually.
+The PowerShell wrapper looks for Git Bash first and then WSL. WSL 2 with Ubuntu is recommended because the devkitPPC toolchain and upstream REL loader dependencies are easiest to install there. It also converts Windows paths such as `C:\Users\...` to Git-Bash paths such as `/c/Users/...`, so run it from PowerShell rather than editing the `.sh` path manually. When PowerShell finds Windows `python.exe` or `py.exe`, it passes that executable into MSYS2/Git Bash so devkitPro's bash can use Python even if it is not on the MSYS2 `PATH`.
 
 
 ### Windows build notes
