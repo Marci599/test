@@ -65,7 +65,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 
 
-If you see `Please set TTYDTOOLS in your environment`, update to the latest script. The build now vendors `PistonMiner/ttyd-tools` into `extern/ttyd-tools`, exports `TTYDTOOLS` automatically, and ensures `$(TTYDTOOLS)/bin/elf2rel` exists before invoking the upstream Makefile. The `TTYDTOOLS` name is historical: the SPM REL loader is based on the TTYD REL tooling, and `elf2rel` is the generic ELF-to-REL converter used for this Super Paper Mario mod.
+If you see `Please set TTYDTOOLS in your environment`, update to the latest script. The build now vendors `PistonMiner/ttyd-tools` into `extern/ttyd-tools`, exports `TTYDTOOLS` automatically, and ensures `$(TTYDTOOLS)/bin/elf2rel` exists before invoking the upstream Makefile. The `TTYDTOOLS` name is historical: the SPM REL loader is based on the TTYD REL tooling, and `elf2rel` is the generic ELF-to-REL converter used for this Super Paper Mario mod. If `elf2rel` must be compiled from source under devkitPro MSYS2, install the host dependencies with `pacman -S --needed mingw-w64-x86_64-gcc mingw-w64-x86_64-boost`.
 
 If you see `make: *** No rule to make target 'us2'. Stop.`, update to the latest script. That error means `make` was being run from the cloned repository root instead of the upstream REL framework directory `extern/spm-rel-loader/spm-rel-loader/rel`.
 

@@ -57,7 +57,11 @@ ensure_elf2rel() {
 
   local candidate
   for candidate in "${candidates[@]}"; do
-    if [ -d "$candidate" ] && [ -f "$candidate/Makefile" ]; then
+    if [ ! -d "$candidate" ]; then
+      continue
+    fi
+
+    if [ -f "$candidate/Makefile" ]; then
       make -C "$candidate"
       local built
       built="$(find "$candidate" -type f -name elf2rel -perm -111 | head -n 1 || true)"
@@ -67,11 +71,33 @@ ensure_elf2rel() {
         return 0
       fi
     fi
+
+    if [ -f "$candidate/elf2rel.cpp" ]; then
+      local cxx=""
+      if command -v g++ >/dev/null 2>&1; then
+        cxx="$(command -v g++)"
+      elif [ -x /mingw64/bin/g++ ]; then
+        cxx=/mingw64/bin/g++
+      elif [ -x /ucrt64/bin/g++ ]; then
+        cxx=/ucrt64/bin/g++
+      elif command -v c++ >/dev/null 2>&1; then
+        cxx="$(command -v c++)"
+      fi
+
+      if [ -n "$cxx" ]; then
+        if "$cxx" -std=c++17 -O2 -I"$candidate" -I"$candidate/elfio" "$candidate/elf2rel.cpp" -o "$expected" -lboost_program_options; then
+          chmod +x "$expected"
+          return 0
+        fi
+      fi
+    fi
   done
 
   echo "Could not build or find elf2rel at $expected" >&2
   echo "SPM rel-loader expects the converter at \$(TTYDTOOLS)/bin/elf2rel." >&2
   echo "TTYDTOOLS currently points to: $TTYDTOOLS" >&2
+  echo "If you are using devkitPro MSYS2 on Windows, install host build dependencies and retry:" >&2
+  echo "  pacman -S --needed mingw-w64-x86_64-gcc mingw-w64-x86_64-boost" >&2
   exit 1
 }
 ensure_elf2rel
