@@ -1,5 +1,7 @@
 <wiidisc version="1">
-  <id game="R8P" developer="01" disc="1" version="2" />
+  <id game="R8P" developer="01" disc="0" version="2">
+    <region type="E" />
+  </id>
   <options>
     <section name="SPM Quick Map Menu">
       <option name="Enable quick map menu" default="1">

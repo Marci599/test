@@ -83,7 +83,7 @@ dist/riivolution/spm-quick-map-menu/files/mod/mod.rel
 
 After building, Dolphin can launch the same Riivolution layout directly:
 
-1. Confirm your game dump is the USA Rev 2 disc. In Dolphin, the game ID should start with `R8PE01`; this XML is scoped to disc `1`, revision `2`.
+1. Confirm your game dump is the USA Rev 2 disc. In Dolphin, the game ID should start with `R8PE01`; this XML is scoped to first-disc index `0`, USA region `E`, and revision/version `2`.
 2. Put the generated files in Dolphin's Riivolution load folder:
    - Windows: `Documents\Dolphin Emulator\Load\Riivolution\`
    - Linux: `~/.local/share/dolphin-emu/Load/Riivolution/`
@@ -96,6 +96,17 @@ After building, Dolphin can launch the same Riivolution layout directly:
    ```
 
    If the `riivolution/` folder does not exist under `Load/Riivolution/`, create it and place the XML there. Keep the `spm-quick-map-menu/` folder next to it, not inside it.
+
+If Dolphin says the XML is "not for the selected game or game revision", check **Properties → Info** for the selected game. This XML expects:
+
+- Game ID prefix: `R8P`
+- Region: `E` / USA
+- Maker/developer: `01`
+- Disc index: `0` for the first disc
+- Revision/version: `2`
+
+If your dump shows revision `0` or another value, it is not the USA Rev 2 dump and Dolphin will correctly reject this XML.
+
 4. In Dolphin's game list, right-click Super Paper Mario and choose **Start with Riivolution Patches...**.
 5. Enable **SPM Quick Map Menu** and click **Start**.
 6. In-game, press `D-Pad Down + 1` to open the menu, select a stage, and press `2` to warp.
