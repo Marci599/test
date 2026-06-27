@@ -6,7 +6,21 @@ mkdir -p "$EXTERN" "$ROOT/dist/riivolution/spm-quick-map-menu/files/mod" "$ROOT/
 
 need() { command -v "$1" >/dev/null 2>&1 || { echo "Missing required command: $1" >&2; exit 1; }; }
 need git
-need python3
+
+find_python() {
+  if command -v python3 >/dev/null 2>&1; then
+    PYTHON_CMD=(python3)
+  elif command -v python >/dev/null 2>&1; then
+    PYTHON_CMD=(python)
+  elif command -v py >/dev/null 2>&1; then
+    PYTHON_CMD=(py -3)
+  else
+    echo "Missing required command: python3, python, or py -3" >&2
+    echo "Python is installed on many Windows machines as 'python' or through the Python Launcher as 'py -3'." >&2
+    exit 1
+  fi
+}
+find_python
 
 if [ ! -d "$EXTERN/spm-rel-loader/.git" ]; then
   git clone --depth 1 https://github.com/SeekyCt/spm-rel-loader "$EXTERN/spm-rel-loader"
@@ -30,7 +44,7 @@ MAKE
 
 cd "$EXTERN/spm-rel-loader"
 if [ -f configure.py ]; then
-  python3 configure.py us2
+  "${PYTHON_CMD[@]}" configure.py us2
 fi
 if command -v ninja >/dev/null 2>&1; then
   ninja us2 || ninja

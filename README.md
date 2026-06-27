@@ -22,7 +22,7 @@ A Super Paper Mario REL mod project for the USA Disc 1 Revision 2 build (`R8PE01
 
 ## Building
 
-Install `devkitPPC`, `ninja`, Python 3, and the SPM REL Loader dependencies. On Linux, macOS, WSL, Git Bash, or MSYS2, run:
+Install `devkitPPC`, `ninja`, Python 3, and the SPM REL Loader dependencies. The build script accepts Python as `python3`, `python`, or Windows' Python Launcher `py -3`. On Linux, macOS, WSL, Git Bash, or MSYS2, run:
 
 ```bash
 ./tools/build_us2.sh
@@ -44,6 +44,17 @@ You do not double-click `build_us2.sh` on Windows. Use one of these options:
 - **Recommended:** install WSL 2 + Ubuntu, install the toolchain there, then run `./tools/build_us2.sh` from the repo folder.
 - **PowerShell helper:** run `.\tools\build_us2.ps1`; it will find Git Bash or WSL and call `build_us2.sh` for you.
 - **Git Bash/MSYS2:** open the repo in that shell and run `./tools/build_us2.sh`.
+
+
+If you see `Missing required command: python3` or a Python-related error on Windows, check the command name in the same terminal:
+
+```powershell
+py -3 --version
+python --version
+python3 --version
+```
+
+The build script now accepts all three forms, but Git Bash/PowerShell must be able to find one of them in `PATH`.
 
 If PowerShell blocks the script, run this from the repo root for the current process only:
 
