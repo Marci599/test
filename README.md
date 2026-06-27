@@ -22,10 +22,34 @@ A Super Paper Mario REL mod project for the USA Disc 1 Revision 2 build (`R8PE01
 
 ## Building
 
-Install `devkitPPC`, `ninja`, Python 3, and the SPM REL Loader dependencies. Then run:
+Install `devkitPPC`, `ninja`, Python 3, and the SPM REL Loader dependencies. On Linux, macOS, WSL, Git Bash, or MSYS2, run:
 
 ```bash
 ./tools/build_us2.sh
+```
+
+On Windows PowerShell, run the wrapper instead:
+
+```powershell
+.\tools\build_us2.ps1
+```
+
+The PowerShell wrapper looks for Git Bash first and then WSL. WSL 2 with Ubuntu is recommended because the devkitPPC toolchain and upstream REL loader dependencies are easiest to install there.
+
+
+### Windows build notes
+
+You do not double-click `build_us2.sh` on Windows. Use one of these options:
+
+- **Recommended:** install WSL 2 + Ubuntu, install the toolchain there, then run `./tools/build_us2.sh` from the repo folder.
+- **PowerShell helper:** run `.\tools\build_us2.ps1`; it will find Git Bash or WSL and call `build_us2.sh` for you.
+- **Git Bash/MSYS2:** open the repo in that shell and run `./tools/build_us2.sh`.
+
+If PowerShell blocks the script, run this from the repo root for the current process only:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\tools\build_us2.ps1
 ```
 
 The script vendors the upstream loader/header projects into `extern/`, configures the target as `us2`, and copies the finished REL to:
@@ -39,6 +63,28 @@ dist/riivolution/spm-quick-map-menu/files/mod/mod.rel
 1. Copy `dist/riivolution/spm-quick-map-menu/` to the root of your SD card.
 2. Copy `riivolution/spm_quick_map_menu.xml` into `SD:/riivolution/`.
 3. Enable the XML in Riivolution and boot your USA Rev 2 disc.
+
+
+## Installing in Dolphin Emulator
+
+After building, Dolphin can launch the same Riivolution layout directly:
+
+1. Confirm your game dump is the USA Rev 2 disc. In Dolphin, the game ID should start with `R8PE01`; this XML is scoped to disc `1`, revision `2`.
+2. Put the generated files in Dolphin's Riivolution load folder:
+   - Windows: `Documents\Dolphin Emulator\Load\Riivolution\`
+   - Linux: `~/.local/share/dolphin-emu/Load/Riivolution/`
+   - macOS: `~/Library/Application Support/Dolphin/Load/Riivolution/`
+3. The final Dolphin folder should contain:
+
+   ```text
+   Load/Riivolution/riivolution/spm_quick_map_menu.xml
+   Load/Riivolution/spm-quick-map-menu/files/mod/mod.rel
+   ```
+
+   If the `riivolution/` folder does not exist under `Load/Riivolution/`, create it and place the XML there. Keep the `spm-quick-map-menu/` folder next to it, not inside it.
+4. In Dolphin's game list, right-click Super Paper Mario and choose **Start with Riivolution Patches...**.
+5. Enable **SPM Quick Map Menu** and click **Start**.
+6. In-game, press `D-Pad Down + 1` to open the menu, select a stage, and press `2` to warp.
 
 ## Notes for modders
 
