@@ -52,6 +52,8 @@ ensure_elf2rel() {
   fi
 
   mkdir -p "$TTYDTOOLS/bin"
+  echo "elf2rel binary missing at: $expected"
+  echo "Looking for elf2rel source under: $TTYDTOOLS/elf2rel"
 
   local candidates=(
     "$LOADER_ROOT/elf2rel"
@@ -90,6 +92,8 @@ ensure_elf2rel() {
       fi
 
       if [ -n "$cxx" ]; then
+        echo "Compiling elf2rel from source: $candidate"
+        echo "Writing elf2rel binary to: $expected"
         if "$cxx" -std=c++17 -O2 -I"$candidate" -I"$candidate/elfio" "$candidate/elf2rel.cpp" -o "$expected" -lboost_program_options; then
           chmod +x "$expected"
           return 0
@@ -98,8 +102,9 @@ ensure_elf2rel() {
     fi
   done
 
-  echo "Could not build or find elf2rel at $expected" >&2
-  echo "SPM rel-loader expects the converter at \$(TTYDTOOLS)/bin/elf2rel." >&2
+  echo "Could not build elf2rel from the source folder or find the generated binary." >&2
+  echo "elf2rel source is expected at: \$(TTYDTOOLS)/elf2rel" >&2
+  echo "SPM rel-loader runs the generated binary at: \$(TTYDTOOLS)/bin/elf2rel" >&2
   echo "TTYDTOOLS currently points to: $TTYDTOOLS" >&2
   echo "If you are using devkitPro MSYS2 on Windows, install host build dependencies and retry:" >&2
   echo "  pacman -S --needed mingw-w64-x86_64-gcc mingw-w64-x86_64-boost" >&2
