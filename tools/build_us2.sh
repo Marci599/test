@@ -80,6 +80,7 @@ ensure_elf2rel() {
     fi
 
     if [ -f "$candidate/elf2rel.cpp" ]; then
+      echo "Found elf2rel source: $candidate/elf2rel.cpp"
       local cxx=""
       if command -v g++ >/dev/null 2>&1; then
         cxx="$(command -v g++)"
@@ -92,18 +93,22 @@ ensure_elf2rel() {
       fi
 
       if [ -n "$cxx" ]; then
+        echo "Using host C++ compiler: $cxx"
         echo "Compiling elf2rel from source: $candidate"
         echo "Writing elf2rel binary to: $expected"
         if "$cxx" -std=c++17 -O2 -I"$candidate" -I"$candidate/elfio" "$candidate/elf2rel.cpp" -o "$expected" -lboost_program_options; then
           chmod +x "$expected"
           return 0
         fi
+        echo "Failed to compile elf2rel from $candidate/elf2rel.cpp" >&2
+      else
+        echo "Found elf2rel source, but no host C++ compiler was available in this MSYS2 shell." >&2
       fi
     fi
   done
 
   echo "Could not build elf2rel from the source folder or find the generated binary." >&2
-  echo "elf2rel source is expected at: \$(TTYDTOOLS)/elf2rel" >&2
+  echo "elf2rel source is expected at: \$(TTYDTOOLS)/elf2rel/elf2rel.cpp" >&2
   echo "SPM rel-loader runs the generated binary at: \$(TTYDTOOLS)/bin/elf2rel" >&2
   echo "TTYDTOOLS currently points to: $TTYDTOOLS" >&2
   echo "If you are using devkitPro MSYS2 on Windows, install host build dependencies and retry:" >&2
