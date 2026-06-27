@@ -39,7 +39,11 @@ fi
 
 LOADER_ROOT="$EXTERN/spm-rel-loader/spm-rel-loader"
 REL_DIR="$LOADER_ROOT/rel"
-export TTYDTOOLS="${TTYDTOOLS:-$EXTERN/ttyd-tools}"
+TTYDTOOLS_DEFAULT="$EXTERN/ttyd-tools"
+if [ -d "$EXTERN/ttyd-tools/ttyd-tools" ]; then
+  TTYDTOOLS_DEFAULT="$EXTERN/ttyd-tools/ttyd-tools"
+fi
+export TTYDTOOLS="${TTYDTOOLS:-$TTYDTOOLS_DEFAULT}"
 
 ensure_elf2rel() {
   local expected="$TTYDTOOLS/bin/elf2rel"
@@ -51,6 +55,7 @@ ensure_elf2rel() {
 
   local candidates=(
     "$LOADER_ROOT/elf2rel"
+    "$TTYDTOOLS/elf2rel"
     "$EXTERN/ttyd-tools/ttyd-tools/elf2rel"
     "$EXTERN/ttyd-tools/elf2rel"
   )
