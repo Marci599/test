@@ -1,0 +1,6 @@
+extern/
+dist/**/*.rel
+*.o
+*.elf
+*.map
+.DS_Store
