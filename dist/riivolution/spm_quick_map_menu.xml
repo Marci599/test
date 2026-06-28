@@ -1,0 +1,17 @@
+<wiidisc version="1">
+  <id game="R8P" developer="01" disc="0" version="2">
+    <region type="E" />
+  </id>
+  <options>
+    <section name="SPM Quick Map Menu">
+      <option name="Enable quick map menu" default="1">
+        <choice name="Enabled">
+          <patch id="quick-map-menu" />
+        </choice>
+      </option>
+    </section>
+  </options>
+  <patch id="quick-map-menu">
+    <folder external="/spm-quick-map-menu/files" recursive="true" />
+  </patch>
+</wiidisc>
